@@ -5,31 +5,32 @@ import ballerina/log;
 function save(string fileName, io:ByteChannel byteChannel) {
     io:ByteChannel destinationChannel = getFileChannel(fileName, io:WRITE);
     try {
-                    copy(byteChannel, destinationChannel);
-                    log:printInfo("File Received");
-                } catch (error err) {
-                    log:printError("error occurred while saving file : "
-                            + err.message);
-                } finally {
-                    byteChannel.close() but {
-                        error e => log:printError("Error closing byteChannel ",
-                            err = e) };
-                    destinationChannel.close() but {
-                        error e =>
-                        log:printError("Error closing destinationChannel",
-                            err = e)
-                    };
-                }
+        copy(byteChannel, destinationChannel);
+        log:printInfo("File Received");
+    } catch (error err) {
+        log:printError("error occurred while saving file : "
+                + err.message);
+    } finally {
+        byteChannel.close() but {
+            error e => log:printError("Error closing byteChannel ",
+                err = e)
+        };
+        destinationChannel.close() but {
+            error e =>
+            log:printError("Error closing destinationChannel",
+                err = e)
+        };
+    }
 }
 
 function getFileChannel(string filePath, io:Mode permission)
-    returns (io:ByteChannel) {
+             returns (io:ByteChannel) {
     io:ByteChannel channel = io:openFile(filePath, permission);
     return channel;
 }
 
 function readBytes(io:ByteChannel channel, int numberOfBytes)
-    returns (blob, int) {
+             returns (blob, int) {
     var result = channel.read(numberOfBytes);
     match result {
         (blob, int) content => {
@@ -41,7 +42,7 @@ function readBytes(io:ByteChannel channel, int numberOfBytes)
     }
 }
 function writeBytes(io:ByteChannel channel, blob content, int startOffset = 0)
-    returns (int) {
+             returns (int) {
     var result = channel.write(content, startOffset);
     match result {
         int numberOfBytesWritten => {
